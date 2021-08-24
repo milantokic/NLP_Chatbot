@@ -3,11 +3,13 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.neighbors import NearestNeighbors
 
+
 def read_data(path):
     corpus = pd.read_csv(path, sep='\t')
     return corpus
 
-corpus = read_data('D:/AI/insurance_qna_dataset.csv').iloc[:,1:]
+
+corpus = read_data('insurance_qna_dataset.csv').iloc[:, 1:]
 corpus = corpus.groupby('Question', as_index=False).agg(lambda x: np.unique(x).tolist())
 corpus_q = corpus['Question']
 
@@ -18,7 +20,6 @@ print('Enter new question')
 new_q = input()
 N = 10
 vector_new = vectorizer.transform([new_q])
-#find 10 nearest neighbors using ball tree algorythm
-nbrs = NearestNeighbors(n_neighbors = N, algorithm = 'kd_tree').fit(X)
+# find 10 nearest neighbors using ball tree algorithm
+nbrs = NearestNeighbors(n_neighbors=N, algorithm='kd_tree').fit(X)
 print(corpus_q.iloc[nbrs.kneighbors(vector_new)[1].flatten()])
-
