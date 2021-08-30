@@ -2,33 +2,34 @@ import numpy as np
 import pandas as pd
 import nltk
 from sklearn.metrics.pairwise import cosine_similarity
-from nltk.stem import WordNetLemmatizer
+from nltk.stem import PorterStemmer
 from nltk import word_tokenize
 import gensim.downloader
 
 nltk.download('wordnet')
 nltk.download('punkt')
 
+
 def read_data(path):
     cr = pd.read_csv(path, sep='\t')
     return cr
 
 
-lem = WordNetLemmatizer()
+porter = PorterStemmer()
 wv = gensim.downloader.load('word2vec-google-news-300')
 
 
-def lemmatize_sent(sent):
+def stem_sent(sent):
     lem_sent = []
     for word in word_tokenize(sent):
         if word.isalnum():
-            lem_sent.append(lem.lemmatize(word))
+            lem_sent.append(porter.stem(word))
     return " ".join(lem_sent)
 
 
 def sent_w2v(sent):
     vector_list = []
-    for token in word_tokenize(lemmatize_sent(sent)):
+    for token in word_tokenize(stem_sent(sent)):
         try:
             vector_list.append(wv[token])
         except:
@@ -48,7 +49,10 @@ all_vec = []
 print("Input question: ")
 new_q = input()
 
-all_sim = [cosine_similarity([sum_vectors(sent_w2v(new_q))] , [sum_vectors(sent_w2v(corpus_q[i]))]) for i in range(corpus_q.shape[0])]
+all_sim = [cosine_similarity([sum_vectors(sent_w2v(new_q))], [sum_vectors(sent_w2v(corpus_q[i]))]) for i in
+           range(corpus_q.shape[0])]
 
-top_10 = np.argsort(all_sim, axis=None)[-10:][::-1]
+top_10_ind = np.argsort(all_sim, axis=None)[-10:][::-1]
+top_10_ques = corpus.iloc[top_10_ind, 0]
 
+print(top_10_ques)
