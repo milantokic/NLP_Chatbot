@@ -1,12 +1,12 @@
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem.snowball import SnowballStemmer
-#from nltk.stem import WordNetLemmatizer
-import gensim
+from nltk.stem import WordNetLemmatizer
+import nltk
 
 import numpy as np
-from numpy import dot
-from numpy.linalg import norm
+
+#nltk.download('wordnet')
 
 def text_preprocessing(dataset_question):
     question_list = [question for question in dataset_question]
@@ -17,7 +17,15 @@ def text_preprocessing(dataset_question):
     #words = [word for word in words if not in stop_words]
     return words
 
-# Here, we need each document to remain a question with stemming
+# Here, we need each question to remain a question basic
+def preprocess(text):
+    text = text.lower()
+    doc = word_tokenize(text)
+    #doc = [word for word in doc if word not in stop_words]
+    doc = [word for word in doc if word.isalpha()]
+    return doc
+
+# Here, we need each question to remain a question with stemming
 s_stemmer = SnowballStemmer(language='english')
 def preprocess_stem(text):
     text = text.lower()
@@ -28,13 +36,13 @@ def preprocess_stem(text):
     return doc
 
 # Here, we need each document to remain a question with lemmatization
-#lemmatizer = WordNetLemmatizer()
+lemmatizer = WordNetLemmatizer()
 def preprocess_lemma(text):
     text = text.lower()
     doc = word_tokenize(text)
     #doc = [word for word in doc if word not in stop_words]
     doc = [word for word in doc if word.isalpha()]
-    doc = [word for word in doc if gensim.utils.lemmatize(word)]
+    doc = [word for word in doc if lemmatizer.lemmatize(word)]
     return doc
 
 def document_vector_mean(wv, doc):
@@ -45,7 +53,7 @@ def document_vector_mean(wv, doc):
 def document_vector_sum(wv, doc):
     # remove out-of-vocabulary words
     doc = [word for word in doc if word in wv.key_to_index]
-    return np.mean(wv[doc], axis=0)
+    return np.sum(wv[doc], axis=0)
 
 # Function that will help us drop documents that have no word vectors in word2vec
 def has_vector_representation(wv, doc):
