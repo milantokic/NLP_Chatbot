@@ -52,7 +52,7 @@ new_q = input()
 all_sim = [cosine_similarity([sum_vectors(sent_w2v(new_q))], [sum_vectors(sent_w2v(corpus_q[i]))]) for i in
            range(corpus_q.shape[0])]
 
-top_10_ind = np.argsort(all_sim, axis=None)[-10:][::-1]
+top_10_ind = np.argsort(all_sim, axis=None)[-25:][::-1]
 top_10_ques = corpus.iloc[top_10_ind, 0]
 
 print(top_10_ques)

@@ -9,7 +9,7 @@ def read_data(path):
     return corpus
 
 
-corpus = read_data('D:/AI/insurance_qna_dataset.csv').iloc[:, 1:]
+corpus = read_data('insurance_qna_dataset.csv').iloc[:, 1:]
 corpus = corpus.groupby('Question', as_index=False).agg(lambda x: np.unique(x).tolist())
 corpus_q = corpus['Question']
 
