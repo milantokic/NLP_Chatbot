@@ -33,7 +33,7 @@ for question in corpus:  # append the vector for each document
     x.append(tp.document_vector_sum(wv, question))
 X = np.array(x)  # list to array
 
-new_question_basic = tp.preprocess_stem(new_question)
+new_question_basic = tp.preprocess(new_question)
 new_question_basic = tp.document_vector_sum(wv, new_question_basic)
 
 print(f"This are the most {top_similar_question} similar question according to cosine similarity: \n")
