@@ -42,7 +42,6 @@ def cosin_dist(number_of_question,count_vector, count_new_vector, top_similar, d
         num_q = question
         calculate_cs = 0
         test = [num_q]
-        # calculate_cs = np.sum(count_tf_todense[num_q, :] * count_tf_new_question_todense[0, :])/(np.sum(count_tf_todense[num_q, :]**2)) * np.sum(count_tf_new_question_todense[0, :]**2)
         calculate_cs = dot(count_vector[num_q, :], count_new_vector[:]) / (
                     norm(count_vector[num_q, :]) * norm(count_new_vector[:]))
         test.append(calculate_cs)
@@ -53,7 +52,7 @@ def cosin_dist(number_of_question,count_vector, count_new_vector, top_similar, d
     for result in range(1, top_similar + 1):
         best_match = new_list[-result][0]
         best_cs = new_list[-result][1]
-        print(f'{dataset_question[best_match]} --> {best_cs}')
+        print(dataset_question[best_match])
 
 
 def cosin_dist_tf(number_of_question,count_vector, count_new_vector, top_similar, dataset_question):
@@ -62,7 +61,6 @@ def cosin_dist_tf(number_of_question,count_vector, count_new_vector, top_similar
         num_q = question
         calculate_cs = 0
         test = [num_q]
-        # calculate_cs = np.sum(count_tf_todense[num_q, :] * count_tf_new_question_todense[0, :])/(np.sum(count_tf_todense[num_q, :]**2)) * np.sum(count_tf_new_question_todense[0, :]**2)
         calculate_cs = dot(count_vector[num_q, :], count_new_vector[0, :]) / (
                     norm(count_vector[num_q, :]) * norm(count_new_vector[0, :]))
         test.append(calculate_cs)
