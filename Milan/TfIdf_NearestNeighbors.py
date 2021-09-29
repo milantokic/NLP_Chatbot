@@ -18,7 +18,7 @@ X = vectorizer.fit_transform(corpus_q)
 
 print('Enter new question')
 new_q = input()
-N = 10
+N = 25
 vector_new = vectorizer.transform([new_q])
 # find 10 nearest neighbors using ball tree algorythm
 nbrs = NearestNeighbors(n_neighbors=N, algorithm='kd_tree').fit(X)

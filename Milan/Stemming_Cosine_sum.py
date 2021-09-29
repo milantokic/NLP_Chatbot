@@ -4,9 +4,9 @@ import nltk
 from nltk.stem import PorterStemmer
 from nltk import word_tokenize
 import gensim.downloader
-from sklearn.neighbors import NearestNeighbors
-
+from sklearn.metrics.pairwise import cosine_similarity
 nltk.download('punkt')
+
 
 def read_data(path):
     cr = pd.read_csv(path, sep='\t')
@@ -35,8 +35,8 @@ def sent_w2v(sent):
     return vector_list
 
 
-def average_vectors(vector_list):
-    return np.mean(vector_list, axis=0)
+def sum_vectors(vector_list):
+    return np.sum(vector_list, axis=0)
 
 
 corpus = read_data('insurance_qna_dataset.csv').iloc[:, 1:]
@@ -44,16 +44,13 @@ corpus = corpus.groupby('Question', as_index=False).agg(lambda x: np.unique(x).t
 corpus_q = corpus['Question']
 
 all_vec = []
-for i in range(corpus_q.shape[0]):
-    all_vec.append(average_vectors(sent_w2v(corpus_q[i])))
-all_vec = np.array(all_vec)
-model = NearestNeighbors(n_neighbors=25, algorithm='ball_tree').fit(all_vec)
-
 print("Input question: ")
-
 new_q = input()
 
-new_vec = [average_vectors(sent_w2v(new_q))]
+all_sim = [cosine_similarity([sum_vectors(sent_w2v(new_q))], [sum_vectors(sent_w2v(corpus_q[i]))]) for i in
+           range(corpus_q.shape[0])]
 
-sim_questions = model.kneighbors(new_vec)
-print(corpus_q[sim_questions[1].flatten()])
+top_10_ind = np.argsort(all_sim, axis=None)[-25:][::-1]
+top_10_ques = corpus.iloc[top_10_ind, 0]
+
+print(top_10_ques)
